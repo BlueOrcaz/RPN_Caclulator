@@ -12,49 +12,63 @@
 
         <script>
          const viewController = {
-             buffer: "",
+             /**
+                viewController
+
+                Handles the input and output from to the web page.
+                access to elements in here need to be prefixed with:
+                =viewController=
+              */
+             buffer0: "",
              IN: 1,
              OUT: 2,
              echoBuffer: () => {
-                 // puts the buffer into the echo space.
+                 // puts the buffer0 into the echo space.
                  const echoMe = document.getElementById("echoMe");
-                 echoMe.innerHTML = viewController.buffer;
+                 echoMe.innerHTML = viewController.buffer0;
              },
-             keypressed: (e) => {
-                 if (e.keyCode == 13) {
-                     // log the input
-                     viewController.log(viewController.IN, viewController.buffer);
+             keypressedIn0: (e) => {
+                 // handle keys pressed in the input0.
+                 // puts the charaters into buffer0
+                 if (e.keyCode == 13) {// press the enter/ return key.
+                     // but what was in the buffer on into the log space.
+                     viewController.log(viewController.IN, viewController.buffer0);
 
 
-                     // On enter/return pressed. - call your method.
+                     // Call =yours= mehtod -- to do something with the input.
                      // NOTE This is your method call.
-                     yours(viewController.buffer);
+                     yours(viewController.buffer0);
 
-                     // clear the buffer
-                     viewController.buffer = "";
+                     // clear the buffer0
+                     viewController.buffer0 = "";
                      viewController.echoBuffer();
                      document.getElementById("input0").value = "";
 
                      return true;
                  }
 
+                 // any other key pressed - put in the buffer and echo it.
                  const input0 = document.getElementById("input0");
-                 viewController.buffer = input0.value;
+                 viewController.buffer0 = input0.value;
                  viewController.echoBuffer();
                  return true;
              },
              setOutput: (s) => {
+                 // put =s= into the Output space.
                  const output = document.getElementById("output");
                  const para = document.createElement("p");
                  para.innerHTML = s;
 
+                 // the Output has one thing -- clear the previous one.
                  viewController.clearOutput();
-                 // put current output
+                 // add the current output
                  output.appendChild(para);
 
+                 // also logs the output.
                  viewController.log(viewController.OUT, s);
              },
              clearOutput: () => {
+                 // removes contents of Output
                  const output = document.getElementById("output");
                  // clear the previous output.
                  while (output.lastChild) {
@@ -62,7 +76,8 @@
                  }
              },
              log: (dir, buff) => {
-                 // push the buffer onto the log.
+                 // add the contents of =buff= onto the log.
+                 // =dir= shows arrows.
                  const para = document.createElement("p");
                  para.innerHTML = buff;
                  paraClass = "logInput";
@@ -74,26 +89,37 @@
                  showResp.appendChild(para);
                  showResp.lastChild.scrollIntoView();
              },
-             clearResponses: () => {
+             clearLog: () => {
+                 // removes the log content.
                  const showResp = document.getElementById("showResp");
                  while (showResp.lastChild) {
                      showResp.removeChild(showResp.lastChild);
                  }
              }
          };
-
+
+         // ////////////////////////////////////////////////////////////
+         // you should mess with this part.
+         //
          function say(myString) {
-             // output method.
+             // output method -- to the Output box, and console
              console.log(myString);
              viewController.setOutput(myString);
          }
+
+         let countInput = 1;
 
          function yours(userInput) {
              // this is called when there is input.
 
              // TODO replace with your code.
-             // echo the input.
-             say(userInput);
+
+             if (countInput%3 == 0) {
+             // echo every third input.
+                 say(userInput);
+             }
+             countInput = countInput + 1;
+
          }
 
          function afterLoaded() {
@@ -102,7 +128,11 @@
 
              return true;
          }
+
+         //
+         // ////////////////////////////////////////////////////////////
         </script>
+
 
         <!-- View stuff below this line. -->
         <style>
@@ -121,11 +151,11 @@
              /* Adjust the layout on thin screens */
              body {
                  grid-template-areas:
-                     "input" "echo"
-                     "output" "log";
+                     "input" "echo" "output" "log";
              }
          }
 
+         /* boxes and the headings  */
          .box {
              margin: 2rem 0.5rem 0;
              padding: 1rem;
@@ -139,6 +169,8 @@
              padding: 0 1rem;
              border-radius: 1rem;
          }
+
+         /* echo space */
          .echoBox {
              grid-area: echo;
              min-height: 1rem;
@@ -157,6 +189,8 @@
              margin-left: 1rem;
              min-height: 1rem;
          }
+
+         /* log space */
          .showLog {
              grid-area: log;
              min-height: 2rem;
@@ -197,6 +231,8 @@
              bottom: 0.1rem;
              padding-top: 0.8rem;
          }
+
+         /* input and output - common styles */
          .ioBox {
              max-width: 30rem;
              display: grid;
@@ -204,6 +240,7 @@
              justify-content: center;
              padding-top: 1.8rem;
          }
+         /* input space */
          .inputBox {
              grid-area: input;
              border: 2px solid #041e13;
@@ -224,6 +261,8 @@
          input:focus, input:focus-visible {
              border-color: #0c633e;
          }
+
+         /* output box */
          .outputBox {
              grid-area: output;
              align-self: start;
@@ -247,6 +286,7 @@
              min-height: 1.1rem;
              font-size: 1.1rem;
          }
+
          button {
              /* make this flat  */
              padding: 0.25rem 1rem;
@@ -259,6 +299,7 @@
              border-right: 1px gray solid;
              border-bottom: 1px gray solid;
          }
+
          .clearOutBtn {
              float: right;
              font-size: 1.5em;
@@ -273,6 +314,7 @@
          }
         </style>
     </head>
+
     <body onload="afterLoaded();">
         <!--[if lt IE 8]>
             <p class="browserupgrade">
@@ -285,15 +327,15 @@
             <h3>Input:</h3>
             <!-- form to add data -->
             <input type="text" id="input0" value="" placeholder="type, press enter to add"
-                   onkeyup="viewController.keypressed(event)" autofocus />
+                   onkeyup="viewController.keypressedIn0(event)" autofocus />
 
-            <!-- add addtional inputs, like so  -->
+            <!-- Shouuld you want addtional inputs:  -->
             <input type="text" id="input1" value="" placeholder="type, press enter to add"
-                   onkeyup="viewController.keypressed(event)" style="display:none;"/>
-            <!-- TODO
+                   onkeyup="viewController.keypressedIn0(event)" style="display:none;"/>
+            <!-- TODO ^^^
                  change the id="MY_NEW_ID"
                  remove style="display:none" to enable.
-                 Add code.
+                 Add code to handle the input.
             -->
         </div>
         <div class="echoBox box">
@@ -309,11 +351,9 @@
             </div>
         </div>
         <div class="showLog box">
-            <!-- js print statements echoed here -->
             <h3>Log</h3>
-            <button class="button" onclick="viewController.clearResponses()" style="float:right;">Clear</button>
-            <div id="showResp">
-            </div>
+            <button class="button" onclick="viewController.clearLog()" style="float:right;">Clear</button>
+            <div id="showResp"></div>
         </div>
     </body>
 </html>
