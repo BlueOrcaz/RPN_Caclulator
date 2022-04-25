@@ -1,0 +1,219 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Apply Javascript</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <script>
+         const interact = {
+             buffer: "",
+             showBuffer: () => {
+
+                 const echoMe = document.getElementById("echoMe");
+                 echoMe.innerHTML = interact.buffer;
+
+             },
+             keypressed: (e) => {
+                 if (e.keyCode == 13) {
+                     // interact.log();
+                     yours(interact.buffer);
+                     return true;
+                 }
+                 const input0 = document.getElementById("input0");
+                 interact.buffer = input0.value;
+                 interact.showBuffer();
+                 return true;
+             },
+             setOutput: (s) => {
+                 const output = document.getElementById("output");
+                 const para = document.createElement("p");
+                 parra.innerHTML = s;
+                 while (output.lastChild) {
+                     output.removeChild(output.lastChild);
+                 }
+                 output.appendChild(parra);
+             },
+             log: () => {
+                 // push the buffer onto the screen.
+                 const para = document.createElement("p");
+                 para.innerHTML = interact.buffer;
+                 showResp = document.getElementById("showResp");
+                 showResp.appendChild(para);
+                 showResp.lastChild.scrollIntoView();
+
+
+                 // clear the buffer
+                 interact.buffer = "";
+                 interact.showBuffer();
+                 document.getElementById("input0").value = "";
+             },
+             clearResponses: () => {
+                 const showResp = document.getElementById("showResp");
+                 while (showResp.lastChild) {
+                     showResp.removeChild(showResp.lastChild);
+                 }
+             }
+         };
+         function say(myString) {
+             console.log(myString);
+             interact.setOutput(myString);
+         }
+         function yours(buffer) {
+             interact.log();
+             say(buffer);
+         }
+        </script>
+
+        <style>
+         body {
+             display: grid;
+             gap: 0.5rem;
+
+             grid-template-areas:
+                 "input echo"
+                 "output log";
+             align-items: center;
+         }
+         .box {
+             margin: 2rem 0.5rem 0;
+             padding: 1rem;
+             border-radius: 1rem;
+             position: relative;
+         }
+         .box h3 {
+             position: absolute;
+             top: -1.8rem;
+             left: 1rem;
+             padding: 0 1rem;
+             border-radius: 1rem;
+         }
+         .echoBox {
+             grid-area: echo;
+             min-height: 1rem;
+             background-color: #e8f1fc;
+             border: 2px solid #082041;
+             border-radius: 1rem;
+             padding: 0 1rem;
+         }
+         .echoBox h3 {
+             background-color: #e8f1fc;
+             color:  #082041;
+         }
+         #echoMe {
+             background-color: #fefcfa;
+             padding: 0.5rem;
+             margin-left: 1rem;
+             min-height: 1rem;
+         }
+         .showLog {
+             grid-area: log;
+             min-height: 2rem;
+             border: 2px solid #2f1d06;
+             border-radius: 1rem;
+             background-color: #fefcfa;
+             padding: 1rem;
+         }
+         .showLog h3 {
+             background-color: #fefcfa;
+             color: #1e1304;
+         }
+         #showResp{
+             max-height: 6rem;
+             overflow-y: scroll;
+         }
+         #showResp p:last-child {
+             position: relative;
+             bottom: 0.1rem;
+             color: green;
+         }
+         .inputBox {
+             grid-area: input;
+             border: 2px solid #041e13;
+             background-color: #fafefc;
+             padding: 1.8rem;
+             max-width: 30rem;
+             display: grid;
+             gap: 0.5rem;
+             justify-content: center;
+         }
+         .inputBox h3 {
+             background-color: #fafefc;
+             color: #041e13;
+         }
+         input {
+             box-sizing: border-box;
+             min-width: 25rem;
+             padding: 0.75rem 1.5rem;
+             border-radius: 0.25rem;
+         }
+         input:focus, input:focus-visible {
+             border-color: #0c633e;
+         }
+         .outputBox {
+             grid-area: output;
+             align-self: start;
+             background-color: #fafcfe;
+             border: 2px solid #040f1e;
+             min-height: 1.5rem;
+             display: flex;
+             justify-content: center;
+         }
+         .outputBox h3 {
+             background-color: #fafcfe;
+             color: #040f1e;
+         }
+         button {
+             /* make this flat  */
+             padding: 0.25rem 1rem;
+             border-radius: 0.25rem;
+         }
+        </style>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">
+            You are using an <strong>outdated</strong> browser. Please
+            <a href="http://browsehappy.com/">upgrade your browser</a> to improve
+            your experience.
+            </p>
+        <![endif]-->
+        <div class="inputBox box">
+            <h3>Input:</h3>
+            <!-- form to add data -->
+            <!-- TODO easy to copy -->
+            <input type="text" id="input0" value="" placeholder="type, press enter to add"
+                   onkeyup="interact.keypressed(event)" autofocus />
+            <input type="text" id="input1" value="" placeholder="type, press enter to add"
+                   onkeyup="interact.keypressed(event)" autofocus />
+            <!-- <br>
+                 <button onclick="interact.output()">Output</button> -->
+        </div>
+        <div class="echoBox box">
+            <h3>Echo</h3>
+            <p>As you type, I echo:</p>
+            <p id="echoMe"></p>
+        </div>
+        <div class="outputBox box">
+            <h3>Output:</h3>
+            <div id="output"></div>
+        </div>
+        <div class="showLog box">
+            <!-- js print statements echoed here -->
+            <h3>Log</h3>
+            <button onclick="interact.clearResponses()" style="float:right;">Clear</button>
+            <div id="showResp">
+            </div>
+        </div>
+        <script>
+         // untilities -- loaded prior to here
+         // Javascript goes here.
+
+        </script>
+    </body>
+</html>
