@@ -14,10 +14,8 @@
          const interact = {
              buffer: "",
              showBuffer: () => {
-
                  const echoMe = document.getElementById("echoMe");
                  echoMe.innerHTML = interact.buffer;
-
              },
              keypressed: (e) => {
                  if (e.keyCode == 13) {
@@ -33,11 +31,11 @@
              setOutput: (s) => {
                  const output = document.getElementById("output");
                  const para = document.createElement("p");
-                 parra.innerHTML = s;
+                 para.innerHTML = s;
                  while (output.lastChild) {
                      output.removeChild(output.lastChild);
                  }
-                 output.appendChild(parra);
+                 output.appendChild(para);
              },
              log: () => {
                  // push the buffer onto the screen.
@@ -79,7 +77,18 @@
                  "input echo"
                  "output log";
              align-items: center;
+
+             font-family: sans-serif;
          }
+         @media screen and (max-width: 50rem) {
+             /* Adjust the layout on thin screens */
+             body {
+                 grid-template-areas:
+                     "input" "echo"
+                     "output" "log";
+             }
+         }
+
          .box {
              margin: 2rem 0.5rem 0;
              padding: 1rem;
@@ -124,7 +133,8 @@
              color: #1e1304;
          }
          #showResp{
-             max-height: 6rem;
+             margin-top: 1rem;
+             max-height: 12rem;
              overflow-y: scroll;
          }
          #showResp p:last-child {
@@ -132,15 +142,20 @@
              bottom: 0.1rem;
              color: green;
          }
-         .inputBox {
-             grid-area: input;
-             border: 2px solid #041e13;
-             background-color: #fafefc;
-             padding: 1.8rem;
+         .ioBox {
              max-width: 30rem;
              display: grid;
              gap: 0.5rem;
              justify-content: center;
+             padding-top: 1.8rem;
+
+
+         }
+         .inputBox {
+             grid-area: input;
+             border: 2px solid #041e13;
+             background-color: #fafefc;
+             min-height: 2.3rem;
          }
          .inputBox h3 {
              background-color: #fafefc;
@@ -151,6 +166,7 @@
              min-width: 25rem;
              padding: 0.75rem 1.5rem;
              border-radius: 0.25rem;
+             font-size: 1.1rem;
          }
          input:focus, input:focus-visible {
              border-color: #0c633e;
@@ -160,18 +176,27 @@
              align-self: start;
              background-color: #fafcfe;
              border: 2px solid #040f1e;
-             min-height: 1.5rem;
-             display: flex;
-             justify-content: center;
+             min-height: 1.8rem;
          }
          .outputBox h3 {
              background-color: #fafcfe;
              color: #040f1e;
          }
+         #output {
+             min-width: 25rem;
+             font-size: 1.1rem;
+         }
          button {
              /* make this flat  */
              padding: 0.25rem 1rem;
-             border-radius: 0.25rem;
+         }
+         .button {
+             border-radius: 0.5rem;
+             border: none;
+         }
+         .button:hover {
+             border-right: 1px gray solid;
+             border-bottom: 1px gray solid;
          }
         </style>
     </head>
@@ -183,37 +208,36 @@
             your experience.
             </p>
         <![endif]-->
-        <div class="inputBox box">
+        <div class="box ioBox inputBox">
             <h3>Input:</h3>
             <!-- form to add data -->
-            <!-- TODO easy to copy -->
             <input type="text" id="input0" value="" placeholder="type, press enter to add"
                    onkeyup="interact.keypressed(event)" autofocus />
+
+            <!-- add addtional inputs, like so  -->
             <input type="text" id="input1" value="" placeholder="type, press enter to add"
-                   onkeyup="interact.keypressed(event)" autofocus />
-            <!-- <br>
-                 <button onclick="interact.output()">Output</button> -->
+                   onkeyup="interact.keypressed(event)" style="display:none;"/>
+            <!-- TODO
+                 change the id="MY_NEW_ID"
+                 remove style="display:none" to enable.
+                 Add code.
+            -->
         </div>
         <div class="echoBox box">
             <h3>Echo</h3>
             <p>As you type, I echo:</p>
             <p id="echoMe"></p>
         </div>
-        <div class="outputBox box">
+        <div class="outputBox box ioBox">
             <h3>Output:</h3>
             <div id="output"></div>
         </div>
         <div class="showLog box">
             <!-- js print statements echoed here -->
             <h3>Log</h3>
-            <button onclick="interact.clearResponses()" style="float:right;">Clear</button>
+            <button class="button" onclick="interact.clearResponses()" style="float:right;">Clear</button>
             <div id="showResp">
             </div>
         </div>
-        <script>
-         // untilities -- loaded prior to here
-         // Javascript goes here.
-
-        </script>
     </body>
 </html>
