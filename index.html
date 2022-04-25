@@ -11,45 +11,57 @@
         <!-- Place favicon.ico in the root directory -->
 
         <script>
-         const interact = {
+         const viewController = {
              buffer: "",
-             showBuffer: () => {
+             echoBuffer: () => {
+                 // puts the buffer into the echo space.
                  const echoMe = document.getElementById("echoMe");
-                 echoMe.innerHTML = interact.buffer;
+                 echoMe.innerHTML = viewController.buffer;
              },
              keypressed: (e) => {
                  if (e.keyCode == 13) {
-                     // interact.log();
-                     yours(interact.buffer);
+                     // On enter/return pressed. - call your method.
+                     // NOTE This is your method call.
+                     yours(viewController.buffer);
+
+                     // log the input
+                     viewController.log();
+                     // clear the buffer
+                     viewController.buffer = "";
+                     viewController.echoBuffer();
+                     document.getElementById("input0").value = "";
+
                      return true;
                  }
+
                  const input0 = document.getElementById("input0");
-                 interact.buffer = input0.value;
-                 interact.showBuffer();
+                 viewController.buffer = input0.value;
+                 viewController.echoBuffer();
                  return true;
              },
              setOutput: (s) => {
                  const output = document.getElementById("output");
                  const para = document.createElement("p");
                  para.innerHTML = s;
+
+                 viewController.clearOutput();
+                 // put current output
+                 output.appendChild(para);
+             },
+             clearOutput: () => {
+                 const output = document.getElementById("output");
+                 // clear the previous output.
                  while (output.lastChild) {
                      output.removeChild(output.lastChild);
                  }
-                 output.appendChild(para);
              },
              log: () => {
-                 // push the buffer onto the screen.
+                 // push the buffer onto the log.
                  const para = document.createElement("p");
-                 para.innerHTML = interact.buffer;
+                 para.innerHTML = viewController.buffer;
                  showResp = document.getElementById("showResp");
                  showResp.appendChild(para);
                  showResp.lastChild.scrollIntoView();
-
-
-                 // clear the buffer
-                 interact.buffer = "";
-                 interact.showBuffer();
-                 document.getElementById("input0").value = "";
              },
              clearResponses: () => {
                  const showResp = document.getElementById("showResp");
@@ -58,14 +70,17 @@
                  }
              }
          };
+
          function say(myString) {
              console.log(myString);
-             interact.setOutput(myString);
+             viewController.setOutput(myString);
          }
+
          function yours(buffer) {
-             interact.log();
+             // TODO put your code in here
              say(buffer);
          }
+
         </script>
 
         <style>
@@ -148,8 +163,6 @@
              gap: 0.5rem;
              justify-content: center;
              padding-top: 1.8rem;
-
-
          }
          .inputBox {
              grid-area: input;
@@ -177,13 +190,21 @@
              background-color: #fafcfe;
              border: 2px solid #040f1e;
              min-height: 1.8rem;
+
+             display: grid;
+
          }
          .outputBox h3 {
              background-color: #fafcfe;
              color: #040f1e;
          }
+         .clearOutput {
+             display:flex;
+             min-height: 3.3rem;
+         }
          #output {
              min-width: 25rem;
+             min-height: 1.1rem;
              font-size: 1.1rem;
          }
          button {
@@ -197,6 +218,15 @@
          .button:hover {
              border-right: 1px gray solid;
              border-bottom: 1px gray solid;
+         }
+         .clear {
+             float: right;
+             font-size: 1.5em;
+             border: none;
+             border-radius: 0.25rem;
+             font-weight: 800;
+             color: gray;
+             background-color: inherit;
          }
         </style>
     </head>
@@ -212,11 +242,11 @@
             <h3>Input:</h3>
             <!-- form to add data -->
             <input type="text" id="input0" value="" placeholder="type, press enter to add"
-                   onkeyup="interact.keypressed(event)" autofocus />
+                   onkeyup="viewController.keypressed(event)" autofocus />
 
             <!-- add addtional inputs, like so  -->
             <input type="text" id="input1" value="" placeholder="type, press enter to add"
-                   onkeyup="interact.keypressed(event)" style="display:none;"/>
+                   onkeyup="viewController.keypressed(event)" style="display:none;"/>
             <!-- TODO
                  change the id="MY_NEW_ID"
                  remove style="display:none" to enable.
@@ -230,12 +260,15 @@
         </div>
         <div class="outputBox box ioBox">
             <h3>Output:</h3>
-            <div id="output"></div>
+            <div class="clearOutput">
+                <div id="output"></div>
+                <button class="clear" onclick="viewController.clearOutput()">X</button>
+            </div>
         </div>
         <div class="showLog box">
             <!-- js print statements echoed here -->
             <h3>Log</h3>
-            <button class="button" onclick="interact.clearResponses()" style="float:right;">Clear</button>
+            <button class="button" onclick="viewController.clearResponses()" style="float:right;">Clear</button>
             <div id="showResp">
             </div>
         </div>
