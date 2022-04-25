@@ -13,6 +13,8 @@
         <script>
          const viewController = {
              buffer: "",
+             IN: 1,
+             OUT: 2,
              echoBuffer: () => {
                  // puts the buffer into the echo space.
                  const echoMe = document.getElementById("echoMe");
@@ -20,12 +22,14 @@
              },
              keypressed: (e) => {
                  if (e.keyCode == 13) {
+                     // log the input
+                     viewController.log(viewController.IN, viewController.buffer);
+
+
                      // On enter/return pressed. - call your method.
                      // NOTE This is your method call.
                      yours(viewController.buffer);
 
-                     // log the input
-                     viewController.log();
                      // clear the buffer
                      viewController.buffer = "";
                      viewController.echoBuffer();
@@ -47,6 +51,8 @@
                  viewController.clearOutput();
                  // put current output
                  output.appendChild(para);
+
+                 viewController.log(viewController.OUT, s);
              },
              clearOutput: () => {
                  const output = document.getElementById("output");
@@ -55,10 +61,15 @@
                      output.removeChild(output.lastChild);
                  }
              },
-             log: () => {
+             log: (dir, buff) => {
                  // push the buffer onto the log.
                  const para = document.createElement("p");
-                 para.innerHTML = viewController.buffer;
+                 para.innerHTML = buff;
+                 paraClass = "logInput";
+                 if (dir == viewController.OUT) {
+                     paraClass = "logOutput";
+                 }
+                 para.classList.add(paraClass);
                  showResp = document.getElementById("showResp");
                  showResp.appendChild(para);
                  showResp.lastChild.scrollIntoView();
@@ -72,17 +83,28 @@
          };
 
          function say(myString) {
+             // output method.
              console.log(myString);
              viewController.setOutput(myString);
          }
 
-         function yours(buffer) {
-             // TODO put your code in here
-             say(buffer);
+         function yours(userInput) {
+             // this is called when there is input.
+
+             // TODO replace with your code.
+             // echo the input.
+             say(userInput);
          }
 
+         function afterLoaded() {
+             say("This ran when the page loaded.");
+             // TODO put inital run scripts in here.
+
+             return true;
+         }
         </script>
 
+        <!-- View stuff below this line. -->
         <style>
          body {
              display: grid;
@@ -152,10 +174,28 @@
              max-height: 12rem;
              overflow-y: scroll;
          }
-         #showResp p:last-child {
+         #showResp p {
+             margin: 0;
+         }
+         .logInput {
+             color: #3c3c3c;
+         }
+         .logOutput {
+             color: #0073d3;
+         }
+         p.logOutput:before {
+             content: "< ";
+             color: #a8a8a8;
+         }
+         p.logInput::before {
+             content: ">> ";
+             color: #a8a8a8;
+         }
+         #showResp p.logInput:nth-last-child(2),
+         #showResp p.logInput:nth-last-child(1) {
              position: relative;
              bottom: 0.1rem;
-             color: green;
+             padding-top: 0.8rem;
          }
          .ioBox {
              max-width: 30rem;
@@ -219,7 +259,7 @@
              border-right: 1px gray solid;
              border-bottom: 1px gray solid;
          }
-         .clear {
+         .clearOutBtn {
              float: right;
              font-size: 1.5em;
              border: none;
@@ -228,9 +268,12 @@
              color: gray;
              background-color: inherit;
          }
+         .clearOutBtn:hover{
+             color: #cc2222;
+         }
         </style>
     </head>
-    <body>
+    <body onload="afterLoaded();">
         <!--[if lt IE 8]>
             <p class="browserupgrade">
             You are using an <strong>outdated</strong> browser. Please
@@ -262,7 +305,7 @@
             <h3>Output:</h3>
             <div class="clearOutput">
                 <div id="output"></div>
-                <button class="clear" onclick="viewController.clearOutput()">X</button>
+                <button class="clearOutBtn" onclick="viewController.clearOutput()">X</button>
             </div>
         </div>
         <div class="showLog box">
