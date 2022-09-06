@@ -1,9 +1,22 @@
 <!doctype html>
 <html class="no-js" lang="">
     <head>
+        <B>List of Operators</B>
+        <b>+ - Addition</b>
+        <b>- - Subtraction</b>
+        <b>* - Multiplication</b>
+        <b>/ - Division</b>
+        <b>^ - Power</b>
+        <b>Sqrt - Square Root</b>
+        <b>Clear - Clears the console, log, and stack</b>
+        <b>Pop - Clears the last element in the stack</b>
+        <b>++ - Converts a Negative Integer to a Positive Integer</b>
+        <b>-- - Converts a Positive Integer to a Negative Integer</b>
+        
+
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Apply Javascript</title>
+        <title>RPN Calculator</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -107,25 +120,566 @@
              viewController.setOutput(myString);
          }
 
-         let countInput = 1;
+        class stack { // initialisation of the "stack" class
+            #stack = []; // empty stack
+            #stackPointer = 0; // empty stack pointer
+            length = 0; // empty length
 
-         function yours(userInput) {
-             // this is called when there is input.
+            constructor() { // stack constructor function
+                this.#stack = []; // constructs/initalises the empty stack
+                this.#stackPointer = 0; // constructs/initalises the empty stack with the starting pointed value of zero
+            }
 
-             // TODO replace with your code.
+            #incSP() { // increase stack pointer
+                this.#stackPointer = this.#stackPointer + 1; // Add to the stack pointer (checks what index to be pointing at)
+                this.length = this.#stackPointer; // the stack pointer value should equal the same amount as the stack's length
+            }
 
-             if (countInput%3 == 0) {
-             // echo every third input.
-                 say(userInput);
-             }
-             countInput = countInput + 1;
+            #decSP() { // decrease stack pointer
+                if (this.#stackPointer > 0) { // If the stack pointer is more then zero, then the function will run
+                    this.#stackPointer = this.#stackPointer - 1; // Subtract the stack pointer (checks what index to be pointing at)
+                    this.length = this.#stackPointer; // the stack pointer value should equal the same amount as the stack's length
+                }
+            }
 
+            push(val) { // pushing values into the stack
+                if (val) {
+                    this.#stack[this.#stackPointer] = val; // the index of the value will be depending on the stack pointer value
+                    this.#incSP(); // increase stack pointer value by one, as well as the length
+                }
+            }
+
+            pop() { // removes the last value of the stack 
+                if (this.#stackPointer == 0){ // if the stack is empty, then null should be returned (no values in stack, how would you pop?)
+                    return null;
+                }
+                this.#decSP(); // subtract the stack pointer, which also subtracts the length of the stack
+                let val = this.#stack[this.#stackPointer]; // the value should equal to the stack/stack pointer, meaning that the value is removed from the stack pointer
+                this.#stack.length = this.#stackPointer; // length of the stack should equal to the stack pointer
+                return val; // returns the values remaining in the stack
+            }
+
+            size() { // retrieves the size of the stack
+                return this.#stackPointer; // size/length of the stack
+            }
+
+            toString() { // to string conversion (Stack Class)
+                return "[ " + this.#stack.toString() + " ]"; // convert the stack array into string to be outputtedx
+            }
+
+            clear() { // clears the stack
+                this.#stack = []; // reset stack to 0 inputted indexes
+                this.#stackPointer = 0; // resets the stack pointer to 0
+                this.length = 0; // resets the length to 0 (can also be done as this.length = this.#stackpointer)
+            }
+
+            removeLastValue(){ // "Popping" the last value from user command, as the pop function in the stack class removes two values instead of one
+                this.length = this.#stackPointer - 1; // length of the stack is equal to the stack pointer take away one. 
+            }
+
+            
+        }
+
+        class Queue{
+            #queue = [];
+            #queueEnd = 0;
+            #queueSize = 0;
+
+            constructor(size){
+                this.#queue = [];
+                this.#queueEnd = 0;
+                this.#queueSize = size + 1;
+            }
+
+
+
+            Enqueue(val) {
+                if(this.#queueEnd < this.#queueSize){
+                    if(val != ""){
+                        this.#queue[this.#queueEnd] = val;
+                    }
+                }
+                this.#queueEnd = this.#queueEnd + 1;
+            }
+
+            Dequeue() {
+                if(this.#queueEnd != 0){
+                    let temp = (this.#queue[0])
+
+                    this.#queueEnd = this.#queueEnd - 1;
+
+                    for(let i = 0;i <= this.#queueEnd; i++){
+                        this.#queue[i] = this.#queue[i+1];
+                    }
+                    return(temp);
+                }
+                else{
+                    say("Err");
+                }
+            }
+
+            isFull() {
+                if(this.#queueEnd == this.#queueSize - 1){
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+
+            isEmpty() {
+                if(this.#queueEnd == 0){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+
+            toString() {
+                return this.#queue.toString();
+            }
+
+            size(){
+                return(this.#queueEnd);
+            }
+                       
+            clear(){
+                this.#queue = [];
+                this.#queueEnd = 0;
+            }
+
+            queue(){
+                return this.#queue;
+            }
+
+            maxLength(){
+                return(this.#queueSize)
+            }
+        }
+
+        q = new Queue(10);
+        
+
+        let operandStack; // Stack -- initialised in afterLoaded()
+ 
+        function sayOpStack() { // function that outputs the stack into the output box and log
+            say(operandStack.toString()); // convert the stack into string instead of an array to be outputted
+        }
+        
+        function sayError(msg) { // Outputs Error into the Log with a specificed message
+            say("Error: " + msg); 
+            return -1;
+        }
+
+        function sayQueue(){
+             say("Queue: [" + q.toString()+"]");
          }
 
-         function afterLoaded() {
-             say("This ran when the page loaded.");
-             // TODO put inital run scripts in here.
+         
+        /* */
+        
+         let countInput = 1;
 
+        
+         function stutter(){
+            if(q.size() > 0){
+                tempQueue = q.queue();
+                q.clear()
+                console.log(tempQueue)
+                
+                for(let i = 0; i < tempQueue.length; i++ ){
+                    q.Enqueue(tempQueue[i])
+                    q.Enqueue(tempQueue[i])
+                    console.log(q.queue())
+                }
+        
+            }
+ 
+
+        }
+
+        let reversalStack = []
+
+        function reverse(){
+            reversalStack = new stack();
+            {
+                // console.log("EpicQueue size =" +EpicQueue.size())
+                if(q.size() > 0){
+                    while(q.size() != 0){
+                        let r1 = "";
+                        r1 = q.Dequeue();
+                        reversalStack.push(r1);
+                        // console.log(EpicQueue.size);
+                    }   
+                        
+                        // console.log(EpicQueue.queue());
+                        // console.log(reversalStack);
+
+                    while(reversalStack.size() > 0){
+                        let r2 = reversalStack.pop();
+                        q.Enqueue(r2);
+                    }
+                    // console.log(EpicQueue.queue());
+  
+                }
+            }
+        }
+
+
+        function mirror(){
+            mirrorStack = new stack();
+            mirrorQueue = new Queue(16);
+            
+            let collection = [];
+            collection = q.queue()
+
+            for(let i = 0; i < collection.length; i++){
+                mirrorQueue.Enqueue(collection[i])
+            }
+            
+            if(mirrorQueue.size() && mirrorStack.size() > 0){
+                    while(mirrorQueue.size() != 0){ // while the queue is not equal to 0
+                        let r1 = "";
+                        r1 = mirrorQueue.Dequeue();
+                        mirrorStack.push(r1);
+                    }   
+                        
+
+                    while(mirrorStack.size() > 0){
+                        let r2 = mirrorStack.pop();
+                        mirrorQueue.Enqueue(r2);
+                    }
+                    // console.log(mirrorQueue.queue());
+                }
+
+            while(mirrorQueue.size() != 0){
+                q.Enqueue(mirrorQueue.Dequeue())
+                
+            }
+            console.log(q.queue());
+
+            
+        }
+
+        function addOp() { // Function for Addition Operator
+            if (operandStack.size() < 2) {
+                // If the stack has less then two values, then the function will return an error. 
+                return sayError("Addition - Not enough operands"); // Call the SayError Function to output an error into the Log.
+            }
+
+            let bStr = operandStack.pop();  // For every string that is inputted into the input box, it will be "Popped" from the stack
+            let b = parseFloat(bStr); // Conversion of the User Input to a float - Decimal numbers can be inputted in using floats 
+            if (isNaN(b)) {
+                //if B is not a number (NaN), then the SayError function is called to say that Operand B is not a number
+                operandStack.push(bStr); //if B is not a number (NaN), then the SayError function is called to say that Operand B is not a number
+                return sayError("Addition - Operand B is not a number: " + bStr); // Call sayError function
+            }
+
+            let aStr = operandStack.pop(); // For every string that is inputted into the input box, it will be "Popped" from the stack
+            let a = parseFloat(aStr); // Conversion of the User Input to a float - Decimal numbers can be inputted in using floats 
+            if (isNaN(a)) {
+                //if A is not a number (NaN), then the SayError function is called to say that Operand A is not a number
+                operandStack.push(aStr); // Push the value into stack
+                return sayError("Addition - Operand A is not a number: " + aStr); // Call sayError function
+            }
+
+            // do the operation
+            operandStack.push((a + b).toString()); // push the operation into the output box and the log as a string
+            }
+
+        function subtractOp() {
+            if (operandStack.size() < 2) {
+                // If the stack has less then two values, then the function will return an error. 
+                return sayError("Subtraction - Not enough operands"); // Call the SayError Function to output an error into the Log.
+            }
+
+            let bStr = operandStack.pop();  // For every string that is inputted into the input box, it will be "Popped" from the stack
+            let b = parseFloat(bStr); // Conversion of the User Input to a float - Decimal numbers can be inputted in using floats 
+            if (isNaN(b)) { 
+                //if B is not a number (NaN), then the SayError function is called to say that Operand B is not a number
+                operandStack.push(bStr); // Push the value into stack
+                return sayError("Subtraction - Operand B is not a number: " + bStr); // Call sayError function
+            }
+
+            let aStr = operandStack.pop(); // For every string that is inputted into the input box, it will be "Popped" from the stack
+            let a = parseFloat(aStr); // Conversion of the User Input to a float - Decimal numbers can be inputted in using floats 
+            if (isNaN(a)) {
+                //if A is not a number (NaN), then the SayError function is called to say that Operand A is not a number
+                operandStack.push(aStr); // Push the value into stack
+                return sayError("Subtraction - Operand A is not a number: " + aStr); // Call sayError function
+            }
+
+            // do the operation
+            operandStack.push((a - b).toString()); // push the operation into the output box and the log as a string
+        }
+
+        function MultiplyOp() {
+            if (operandStack.size() < 2) {
+                // If the stack has less then two values, then the function will return an error. 
+                return sayError("Multiplication - Not enough operands"); // Call the SayError Function to output an error into the Log.
+            }
+
+            let bStr = operandStack.pop();  // For every string that is inputted into the input box, it will be "Popped" from the stack
+            let b = parseInt(bStr); // Conversion of the User Input to a float - Decimal numbers can be inputted in using floats 
+            if (isNaN(b)) {
+                // if B is not a number (NaN), then the SayError function is called to say that Operand B is not a number
+                operandStack.push(bStr); // Push the value into the stack
+                return sayError("Multiplication - Operand B is not a number: " + bStr); // Call sayError function
+            }
+
+            let aStr = operandStack.pop();
+            let a = parseInt(aStr);
+            if (isNaN(a)) {
+                // if A is not a number (NaN), then the SayError function is called to say that Operand A is not a number
+                operandStack.push(aStr); // Push the value into the stack
+                return sayError("Multiplication - Operand A is not a number: " + aStr); // Call sayError function
+            }
+
+            // do the operation
+            operandStack.push((a * b).toString()); // push the operation into the output box and the log as a string
+        }
+
+        function DivideOp() {
+            if (operandStack.size() < 2) {
+                // If the stack has less then two values, then the function will return an error. 
+                return sayError("Division - Not enough operands"); // Call the SayError Function to output an error into the Log.
+            }
+
+            let bStr = operandStack.pop(); // For every string that is inputted into the input box, it will be "Popped" from the stack
+            let b = parseFloat(bStr); // Conversion of the User Input to a float - Decimal numbers can be inputted in using floats 
+            if (isNaN(b)) {
+                // if B is not a number (NaN), then the SayError function is called to say that Operand B is not a number
+                operandStack.push(bStr); // push value into stack
+                return sayError("Division- Operand B is not a number: " + bStr); // Call sayError function
+            }
+
+            let aStr = operandStack.pop(); // For every string that is inputted into the input box, it will be "Popped" from the stack
+            let a = parseFloat(aStr); // Conversion of the User Input to a float - Decimal numbers can be inputted in using floats 
+            if (isNaN(a)) {
+                // if A is not a number (NaN), then the SayError function is called to say that Operand A is not a number
+                operandStack.push(aStr); // push value into stack
+                return sayError("Division - Operand A is not a number: " + aStr); // Call sayError function
+            }
+
+            // do the operation
+            operandStack.push((a / b).toString()); // push the operation into the output box and the log as a string
+        }
+
+        function PowerOp() {
+            if (operandStack.size() < 2) {
+                // If the stack has less then two values, then the function will return an error. 
+                return sayError("Power - Not enough operands"); // Call the sayError function
+            }
+
+            let bStr = operandStack.pop(); // For every string that is inputted into the input box, it will be "Popped" from the stack
+            let b = parseFloat(bStr); // Conversion of the User Input to a float - Decimal numbers can be inputted in using floats 
+            if (isNaN(b)) {
+                // if B is not a number (NaN), then the SayError function is called to say that Operand B is not a number
+                operandStack.push(bStr); // Push value into stack
+                return sayError("Power - Operand B is not a number: " + bStr); // call SayError function
+            }
+
+            let aStr = operandStack.pop(); // For every string that is inputted into the input box, it will be "Popped" from the stack
+            let a = parseFloat(aStr); // Conversion of the User Input to a float - Decimal numbers can be inputted in using floats 
+            if (isNaN(a)) {
+                // if A is not a number (NaN), then the SayError function is called to say that Operand A is not a number
+                operandStack.push(aStr); // push value into stack
+                return sayError("Power - Operand A is not a number: " + aStr); // call sayError function
+            }
+
+            // do the operation
+            operandStack.push((a ** b).toString()); // Push value into output and log as a string
+        }
+
+        function SqrtOp() {
+            if (operandStack.size() < 1) {
+                /// If the stack has less then one value, then the function will return an error. 
+                return sayError("SquareRoot - Not enough operands"); // call sayError function
+            }
+
+
+
+            let stStr = operandStack.pop(); // For every string that is inputted into the input box, it will be "Popped" from the stack
+            let st = parseFloat(stStr); // Conversion of the userinput into a float - decimal numbers can be inputted in using floats
+            if (isNaN(st)) {
+                // if st is not a number (NaN), then the SayError function is called to say that Operand st is not a number
+                operandStack.push(stStr);
+                return sayError("SquareRoot - Operand B is not a number: " + stStr);
+            }
+
+            // do the operation
+            operandStack.push((Math.sqrt(st)).toString()); // Push the value into output and log as a string
+        }
+
+        function ClearOp() {
+            const output = document.getElementById("output"); // returns the output element object (calling for the output box)
+                 // clear the previous output.
+                 while (output.lastChild) {
+                     output.removeChild(output.lastChild); // remove all the last values in a while loop until the lastchild equals to false
+                 }
+
+                 // clear log (original)
+                 const showResp = document.getElementById("showResp"); // returns the showResp object (calling for log)
+                 while (showResp.lastChild) {
+                     showResp.removeChild(showResp.lastChild); // remove all the last values in a while loop until the last child equals to false 
+                 }
+                
+                operandStack.clear(); // clear stack, length and stack pointer
+                q.clear();
+        }
+
+        
+        function NegativeIntOp() { 
+            if (operandStack.size() < 1) {
+                /// If the stack has less then one value, then the function will return an error. 
+                return sayError("IntegerConversion - Not enough operands"); // call sayError function
+            }
+
+
+
+            let bStr = operandStack.pop(); // For every string that is inputted into the input box, it will be "Popped" from the stack
+            let b = parseFloat(bStr); // Conversion of the userinput into a float - decimal numbers can be inputted in using floats
+            if (isNaN(b)) { 
+                // if B is not a number (NaN), then the SayError function is called to say that Operand B is not a number
+                operandStack.push(bStr); // push into stack
+                return sayError("IntegerConversion - Operand is not a number: " + bStr); // call sayError function
+            }
+
+            let sign = Math.sign(b) // returns the value with either positive, zero, or negative
+
+            if(sign == -1){ // if math.sign determines it is negative
+                // do the operation
+                operandStack.push((Math.abs(b)).toString()); // push the input and converting to a negative integer
+            }
+            else{
+                return sayError("IntegerConversion - Operand is not a negative Integer"); // call for sayError function
+            }
+        }
+
+        function PositiveIntOp() {
+            if (operandStack.size() < 1) {
+                /// If the stack has less then one value, then the function will return an error. 
+                return sayError("IntegerConversion - Not enough operands"); // call sayError function
+            }
+
+
+
+            let bStr = operandStack.pop(); // For every string that is inputted into the input box, it will be "Popped" from the stack
+            let b = parseFloat(bStr); // Conversion of the userinput into a float - decimal numbers can be inputted in using floats
+            if (isNaN(b)) {
+                // if B is not a number (NaN), then the SayError function is called to say that Operand B is not a number
+                operandStack.push(bStr); // push into stack
+                return sayError("IntegerConversion - Operand is not a number: " + bStr); // call sayError function
+            }
+
+            let sign = Math.sign(b) // returns the value with either positive, zero, or negative
+
+            if(sign == 1){ // if math.sign determines it is positive
+                // do the operation
+                operandStack.push((-Math.abs(b)).toString()); // push the input and converting to a positive integer
+            }
+            else{
+                return sayError("IntegerConversion - Operand is not a negative Integer"); //call for sayError function
+            }
+        }
+
+        function PopOp() { // Pop Function
+            if (operandStack.size() == 0) {
+                // if the size of the stack equals to zero then return error
+                return sayError("Pop - User has not inputted any operands!"); // call sayError function
+            }
+            let bStr = operandStack.pop(); // For every string that is inputted into the input box, it will be "Popped" from the stack
+            let b = parseFloat(bStr); // Conversion of the userinput into a float - decimal numbers can be inputted in using floats
+            operandStack.removeLastValue(); // Calls the removeLastValue function, which pops the last value inputted into the stack. 
+        }
+
+
+
+        
+        let filteredOperators = ["+","-","*","/","^","Clear","++","--", "sqrt","Pop", "Stutter", "Reverse", "Mirror"]; // Array to store all the used operators in the calculator
+         
+         function yours(userInput) {
+            if (userInput != "") {
+                // Split user input into an array to be evaluated 
+                const inputArray = splitInput(userInput);
+                //iterate through the split array 
+                for(var i=0; i<inputArray.length; i++){
+                    nextInput = inputArray[i];
+                    say(nextInput); 
+                    //debugging to test output
+                    //check if next input in the array is addition
+                    //you will need to check if the input is also -,*,/
+                    if (nextInput == filteredOperators[0]) { // Addition
+                        addOp(); // call function
+                    }
+                    else if (nextInput == filteredOperators[1]) { // Subtraction
+                        subtractOp(); // call function
+                    }
+                    else if (nextInput == filteredOperators[2]) { // Multiplication
+                        MultiplyOp(); // call function
+                    }
+                    else if (nextInput == filteredOperators[3]) { // Division
+                        DivideOp(); // call function
+                    }
+                    else if (nextInput == filteredOperators[4]) { // To the power of
+                        PowerOp(); // call function
+                    }
+                    else if (nextInput == filteredOperators[5]) { // Clear
+                        ClearOp(); // call function
+
+                    }
+                    else if (nextInput == filteredOperators[7]) { // Poisitive Integer
+                        PositiveIntOp(); // call function
+                    }
+                    else if (nextInput == filteredOperators[6]) { // Negative Integer
+                        NegativeIntOp(); // call function
+                    }
+                    else if (nextInput == filteredOperators[8]) { // SquareRoot
+                        SqrtOp(); // call function
+                    }
+                    else if (nextInput == filteredOperators[9]){ // Pop
+                        PopOp(); // call function
+                    }
+                    else if (nextInput == filteredOperators[10]){
+                        stutter();
+                        sayQueue();
+                    
+                    }
+
+                    else if (nextInput == filteredOperators[11]){
+                        reverse();
+                        sayQueue();
+                    }
+
+                    else if (nextInput == filteredOperators[12]){
+                        mirror();
+                        sayQueue();
+                    
+                    } else {
+                        operandStack.push(nextInput); // if none of the values is found in filteredoperators array, then the next input will be pushed into a stack instead of calling an array
+                        q.Enqueue(nextInput);
+                
+                    }
+                    // debugging output.
+                    
+                }
+         }
+
+         sayOpStack(); // Outputs the stack through string 
+        }
+
+        function splitInput(input){ // Split each input in an index in an array 
+            let splitArray = input.split(" "); // split each string into an index
+            say(splitArray.toString()); // convert to string (number input)
+            return splitArray; // returns the converted values 
+        }
+
+
+         function afterLoaded() {
+             say("0"); // Says zero when page loads up
+             // TODO put inital run scripts in here.
+             operandStack = new stack(); // sets up a new stack for user to begin inputting numbers
              return true;
          }
 
@@ -137,6 +691,7 @@
         <!-- View stuff below this line. -->
         <style>
          body {
+             background-color: #ffffff;
              display: grid;
              gap: 0.5rem;
 
@@ -145,7 +700,8 @@
                  "output log";
              align-items: center;
 
-             font-family: sans-serif;
+             font-family: "Courier New";
+
          }
          @media screen and (max-width: 50rem) {
              /* Adjust the layout on thin screens */
